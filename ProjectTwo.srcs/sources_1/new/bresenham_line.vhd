@@ -47,8 +47,11 @@ begin
     row := conv_integer(vcount);
     col := conv_integer(hcount);
 
-    -- Protection to only run once
+    -- Protection to only run once (Gate keeping...)
     if ( col /= line_col and row /= line_row ) then
+      line_col := col;
+      line_row := row;
+
       if ( row = 1 and col = 1 ) then
         -- NEW FRAME
         -- Calculate deltas
@@ -59,16 +62,13 @@ begin
         err := 2 * drow - dcol;
 
         -- Reset the row and column
-        line_row_out <= "00000001010"; -- 10
-        line_col_out <= "00000001010"; -- 10
+        line_row_out <= std_logic_vector(to_unsigned(Start_Row, line_row_out'length));
+        line_col_out <= std_logic_vector(to_unsigned(Start_Col, line_col_out'length));
 
+        -- CURRENTLY ASSUMES 1,1 is not included
         Red   <= "0000";
         Green <= "0000";
         Blue  <= "0000";
-
-        -- Red   <= "1111";
-        -- Green <= "1111";
-        -- Blue  <= "1111";
 
       -- line_col < Finish_Col leaves out last pixel, change back to <= after testing
       -- elsif (row = line_row and col = line_col and line_col < Finish_Col) then
@@ -86,24 +86,24 @@ begin
         -- Increment column
         line_col_out <= line_col_in + 1;
 
-        -- if (err > 0) then
-        --   -- Increment row being drawn
-        --   if ( Start_Row > Finish_Row ) then
-        --     line_row := line_row + 1;
-        --   elsif ( Start_Row < Finish_Row) then
-        --     line_row := line_row - 1;
-        --   end if;
+        if (err > 0) then
+          -- Increment row being drawn
+          if ( Start_Row > Finish_Row ) then
+            line_row_out <= line_row_in + 1;
+          elsif ( Start_Row < Finish_Row) then
+            line_row_out <= line_row_in - 1;
+          end if;
 
-        --   -- Subtract error
-        --   err := err - (2 * dcol);
+          -- Subtract error
+          err := err - (2 * dcol);
 
-        -- else
-        --   -- Add to error
-        --   err := err + (2 * drow);
+        else
+          -- Add to error
+          err := err + (2 * drow);
 
-        --   -- line_row := 10; -- THIS SHOULDN'T BE HERE!! JUST FOR TESTING!!
+          -- line_row := 10; -- THIS SHOULDN'T BE HERE!! JUST FOR TESTING!!
 
-      -- end if;
+        end if;
       else
         -- Not on line
         Red   <= "0000";
@@ -111,10 +111,6 @@ begin
         Blue  <= "0000";
 
       end if;
-
-      line_col := col;
-      line_row := row;
-
     end if;
   end process;
 end Behavioral;
