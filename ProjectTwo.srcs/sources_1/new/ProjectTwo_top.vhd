@@ -48,9 +48,9 @@ architecture Behavioral of ProjectTwo_top is
 
     Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank, vsync : in STD_LOGIC;
           Line_Red, Line_Green, Line_Blue : in STD_LOGIC_VECTOR (3 downto 0);
-          Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0);
-          Line_Col_In, Line_Row_In : in STD_LOGIC_VECTOR(10 downto 0);
-          Line_Col_Out, Line_Row_Out : out STD_LOGIC_VECTOR(10 downto 0)
+          Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0)
+          -- Line_Col_In, Line_Row_In : in STD_LOGIC_VECTOR(10 downto 0);
+          -- Line_Col_Out, Line_Row_Out : out STD_LOGIC_VECTOR(10 downto 0)
           );
   end component;
 
@@ -72,12 +72,12 @@ begin
   --                                  RED => Red_Out, GREEN => Green_Out, BLUE => Blue_Out);
 
   bl : bresenham_line
-    generic map (Start_Col => 10, Start_Row => 10, Finish_Col => 100, Finish_Row => 10)
+    generic map (Start_Col => 10, Start_Row => 10, Finish_Col => 100, Finish_Row => 50)
     port map (hcount => hcount, vcount => vcount, blank => blank, vsync => VSYNC_temp,
               Line_Red => Line_Red, Line_Green => Line_Green, Line_Blue => Line_Blue,
-              Red => Red_Out, Green => Green_Out, Blue => Blue_Out,
-              Line_Col_Out => Line_Col_Feedback, Line_Row_Out => Line_Row_Feedback,
-              Line_Col_In => Line_Col_Feedback, Line_Row_In => Line_Row_Feedback
+              Red => Red_Out, Green => Green_Out, Blue => Blue_Out
+              -- Line_Col_Out => Line_Col_Feedback, Line_Row_Out => Line_Row_Feedback,
+              -- Line_Col_In => Line_Col_Feedback, Line_Row_In => Line_Row_Feedback
               );
 
   VSYNC <= VSYNC_temp;

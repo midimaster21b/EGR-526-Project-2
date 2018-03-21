@@ -27,90 +27,85 @@ entity bresenham_line is
 
   Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank, vsync : in STD_LOGIC;
         Line_Red, Line_Green, Line_Blue : in STD_LOGIC_VECTOR (3 downto 0);
-        Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0);
-        Line_Col_In, Line_Row_In : in STD_LOGIC_VECTOR(10 downto 0);
-        Line_Col_Out, Line_Row_Out : out STD_LOGIC_VECTOR(10 downto 0)
+        Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0)
+        -- Line_Col_In, Line_Row_In : in STD_LOGIC_VECTOR(10 downto 0);
+        -- Line_Col_Out, Line_Row_Out : out STD_LOGIC_VECTOR(10 downto 0)
         );
 
 end bresenham_line;
 
 architecture Behavioral of bresenham_line is
 
-
 begin
   -- process(hcount, vcount, blank, vsync)
   -- process(hcount, vcount, blank, vsync, line_row_in, line_col_in)
   process(hcount)
-    VARIABLE row, col, drow, dcol, err, line_row, line_col : INTEGER;
+    VARIABLE err : INTEGER range -1300 to 1000;
+    variable dcol, col, line_col, col_iter : INTEGER range 1 to 640;
+    variable drow, row, line_row, row_iter : INTEGER range 1 to 480;
+    variable Red_Out, Green_Out, Blue_Out : STD_LOGIC_VECTOR := "0000";
 
   begin
     row := conv_integer(vcount);
     col := conv_integer(hcount);
 
-    -- Protection to only run once (Gate keeping...)
-    if ( col /= line_col and row /= line_row ) then
-      line_col := col;
-      line_row := row;
+    drow := Finish_Row - Start_Row;
+    dcol := Finish_Col - Start_Col;
 
-      if ( row = 1 and col = 1 ) then
-        -- NEW FRAME
-        -- Calculate deltas
-        drow := Finish_Row - Start_Row;
-        dcol := Finish_Col - Start_Col;
+    -- Calculate initial error
+    -- Max: 2 * 480
+    -- Min: -640
+    err := 2 * drow - dcol;
 
-        -- Reset the error calculation
-        err := 2 * drow - dcol;
+    row_iter := Start_Row;
+    col_iter := Start_Col;
 
-        -- Reset the row and column
-        line_row_out <= std_logic_vector(to_unsigned(Start_Row, line_row_out'length));
-        line_col_out <= std_logic_vector(to_unsigned(Start_Col, line_col_out'length));
+    -- Used for determining next
+    line_col := Start_Col;
 
-        -- CURRENTLY ASSUMES 1,1 is not included
-        Red   <= "0000";
-        Green <= "0000";
-        Blue  <= "0000";
+    Red_Out   := "0000";
+    Green_Out := "0000";
+    Blue_Out  := "0000";
 
-      -- line_col < Finish_Col leaves out last pixel, change back to <= after testing
-      -- elsif (row = line_row and col = line_col and line_col < Finish_Col) then
-      -- elsif ((row = line_row and col = line_col) and line_col < Finish_Col) then
-      -- elsif (row = line_row and col = line_col) then
-      elsif (row = conv_integer(line_row_in) and col = conv_integer(line_col_in)) then
-        -- Line present
-        -- Red   <= Line_Red;
-        -- Green <= Line_Green;
-        -- Blue  <= Line_Blue;
-        Red   <= "1111";
-        Green <= "1111";
-        Blue  <= "1111";
+    for col_iter in Start_Col to Finish_Col loop
+      -- for row_iter in Start_Row to Finish_Row loop
 
-        -- Increment column
-        line_col_out <= line_col_in + 1;
-
-        if (err > 0) then
-          -- Increment row being drawn
-          if ( Start_Row > Finish_Row ) then
-            line_row_out <= line_row_in + 1;
-          elsif ( Start_Row < Finish_Row) then
-            line_row_out <= line_row_in - 1;
-          end if;
-
-          -- Subtract error
-          err := err - (2 * dcol);
-
-        else
-          -- Add to error
-          err := err + (2 * drow);
-
-          -- line_row := 10; -- THIS SHOULDN'T BE HERE!! JUST FOR TESTING!!
-
-        end if;
-      else
-        -- Not on line
-        Red   <= "0000";
-        Green <= "0000";
-        Blue  <= "0000";
-
+      -- if (col_iter = line_col and row_iter = line_row) then
+      if (col = col_iter and row = row_iter) then
+        Red_Out   := "1111";
+        Green_Out := "1111";
+        Blue_Out  := "1111";
       end if;
-    end if;
+
+      if err > 0 then
+        -- Increment row
+        -- y = y + 1;
+        -- line_col := line_col + 1;
+        row_iter := row_iter + 1;
+
+        -- D = D - 2*dx
+        -- Min: -1280
+        err := err - (2 * dcol);
+      end if;
+
+      -- D = D + 2*dy
+      -- Max: 960
+      err := err + (2 * drow);
+
+    -- end loop;
+    end loop;
+
+    Red   <= Red_Out;
+    Green <= Green_Out;
+    Blue  <= Blue_Out;
+
+    -- for row_iter in 1 to 480 loop
+    --   for col_iter in 1 to 640 loop
+    --     if (col_iter >= Start_Row and col_iter <= Finish_Row) and (row_iter >= Start_row and row_iter <= Finish_Row) then
+    --       if (err > 0)
+    --     end if;
+    --   end loop;
+    -- end loop;
+
   end process;
 end Behavioral;
