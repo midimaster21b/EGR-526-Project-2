@@ -120,10 +120,20 @@ begin
   -- process(Red1, Red2, Red3, Red4, Red5, Red6, Red7, Red8,
   --         Green1, Green2, Green3, Green4, Green5, Green6, Green7, Green8,
   --         Blue1, Blue2, Blue3, Blue4, Blue5, Blue6, Blue7, Blue8)
-  process(hcount, vcount)
+  process(hcount)
   begin
-    Red   <= Red1 or Red2 or Red3 or Red4 or Red5 or Red6 or Red7 or Red8;
-    Green <= Green1 or Green2 or Green3 or Green4 or Green5 or Green6 or Green7 or Green8;
-    Blue  <= Blue1 or Blue2 or Blue3 or Blue4 or Blue5 or Blue6 or Blue7 or Blue8;
+
+    if (blank = '0') then
+      Red   <= Red1 or Red2 or Red3 or Red4 or Red5 or Red6 or Red7 or Red8;
+      Green <= Green1 or Green2 or Green3 or Green4 or Green5 or Green6 or Green7 or Green8;
+      Blue  <= Blue1 or Blue2 or Blue3 or Blue4 or Blue5 or Blue6 or Blue7 or Blue8;
+
+    else
+      Red   <= "0000";
+      Green <= "0000";
+      Blue  <= "0000";
+
+    end if;
+
   end process;
 end Behavioral;

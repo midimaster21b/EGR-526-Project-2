@@ -43,6 +43,11 @@ architecture Behavioral of ProjectTwo_top is
           Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0));
   end component;
 
+  component lasers is
+      Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank : in STD_LOGIC;
+              Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0));
+  end component;
+
   component pixel_mux is
     Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0);
           blank : in STD_LOGIC;
@@ -56,7 +61,7 @@ architecture Behavioral of ProjectTwo_top is
 
   signal background_blue, background_green, background_red : STD_LOGIC_VECTOR (3 downto 0);
   signal spaceship_blue, spaceship_green, spaceship_red : STD_LOGIC_VECTOR (3 downto 0) := "0000";
-
+  signal laser_blue, laser_green, laser_red : STD_LOGIC_VECTOR (3 downto 0) := "0000";
 
 begin
   c1 : clk_wiz_0 PORT MAP (clk_in1 => clk_100MHz, reset => reset, clk_out1 => clk_25MHz,
@@ -69,10 +74,15 @@ begin
   s1 : static_background PORT MAP (hcount => hcount, vcount => vcount, blank => blank,
                                    RED => background_red, GREEN => background_green, BLUE => background_blue);
 
+
+  lase1: lasers port map (hcount => hcount, vcount => vcount, blank => blank,
+                          Red => laser_red, Green => laser_green, Blue => laser_blue);
+
+
   p1 : pixel_mux port map (hcount => hcount, vcount => vcount, blank => blank,
-                           RED_IN_1 => background_red, RED_IN_2 => spaceship_red,
-                           GREEN_IN_1 => background_green, GREEN_IN_2 => spaceship_green,
-                           BLUE_IN_1 => background_blue, BLUE_IN_2 => spaceship_blue,
+                           RED_IN_1 => background_red, RED_IN_2 => laser_red,
+                           GREEN_IN_1 => background_green, GREEN_IN_2 => laser_green,
+                           BLUE_IN_1 => background_blue, BLUE_IN_2 => laser_blue,
                            Red_Out => Red_Out, Green_Out => Green_Out, Blue_Out => Blue_Out
                            );
 
