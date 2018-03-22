@@ -59,9 +59,8 @@ begin
 
   -- Not showing up currently
   upper_right_diag : bresenham_line
-    -- generic map (Start_Col => 556, Start_Row => 1, Finish_Col => 461, Finish_Row => 109)
-    -- generic map (Start_Col => 461, Start_Row => 109, Finish_Col => 556, Finish_Row => 1)
-    generic map (Start_Col => 461, Start_Row => 109, Finish_Col => 550, Finish_Row => 1)
+    generic map (Start_Col => 556, Start_Row => 1, Finish_Col => 461, Finish_Row => 109)
+    -- generic map (Start_Col => 461, Start_Row => 110, Finish_Col => 556, Finish_Row => 110)
     port map (hcount => hcount, vcount => vcount,
               Line_Red => Line_Red, Line_Green => Line_Green, Line_Blue => Line_Blue,
               Red => Red2, Green => Green2, Blue => Blue2
@@ -84,8 +83,8 @@ begin
 
   -- Not showing up currently
   left_inner_line : bresenham_line
-    -- generic map (Start_Col => 178, Start_Row => 109, Finish_Col => 141, Finish_Row => 371)
-    generic map (Start_Col => 141, Start_Row => 371, Finish_Col => 178, Finish_Row => 109)
+    generic map (Start_Col => 178, Start_Row => 109, Finish_Col => 141, Finish_Row => 371)
+    -- generic map (Start_Col => 141, Start_Row => 371, Finish_Col => 178, Finish_Row => 109)
     port map (hcount => hcount, vcount => vcount,
               Line_Red => Line_Red, Line_Green => Line_Green, Line_Blue => Line_Blue,
               Red => Red5, Green => Green5, Blue => Blue5
@@ -102,9 +101,7 @@ begin
               );
 
   bottom_left_diag : bresenham_line
-    -- generic map (Start_Col => 1, Start_Row => 439, Finish_Col => 141, Finish_Row => 371)
     generic map (Start_Col => 1, Start_Row => 439, Finish_Col => 141, Finish_Row => 371)
-    -- generic map (Start_Col => 141, Start_Row => 371, Finish_Col => 1, Finish_Row => 439)
     port map (hcount => hcount, vcount => vcount,
               Line_Red => Line_Red, Line_Green => Line_Green, Line_Blue => Line_Blue,
               Red => Red7, Green => Green7, Blue => Blue7

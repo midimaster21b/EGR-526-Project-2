@@ -36,7 +36,7 @@ architecture Behavioral of bresenham_line is
 
 begin
   -- process(hcount, vcount, blank, vsync)
-  process(hcount)
+  process(hcount, vcount)
     VARIABLE err : INTEGER range -1300 to 1000;
     variable dcol, col, col_iter, col_iter_start, col_iter_finish : INTEGER range 1 to 640;
     variable drow, row, row_iter, row_iter_start, row_iter_finish : INTEGER range 1 to 480;
@@ -139,7 +139,7 @@ begin
           -- y = y + 1;
           if Finish_Col > Start_Col then
             col_iter := col_iter + 1;
-          elsif Finish_Row < Start_Row then
+          elsif Finish_Col < Start_Col then
             col_iter := col_iter - 1;
           end if;
 
