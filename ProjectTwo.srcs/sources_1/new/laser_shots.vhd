@@ -45,7 +45,6 @@ architecture Behavioral of lasers is
 begin
 
   left_laser : bresenham_line
-    -- generic map (Start_Col => 220, Start_Row => 480, Finish_Col => 320, Finish_Row => 240)
     generic map (Start_Col => 320, Start_Row => 240, Finish_Col => 220, Finish_Row => 480)
     port map (hcount => hcount, vcount => vcount,
               Line_Red => Line_Red, Line_Green => Line_Green, Line_Blue => Line_Blue,
@@ -62,7 +61,7 @@ begin
 
   -- This should probably be a separate entity...
   -- Pixel mux...
-  process(hcount, vcount)
+  process(hcount, vcount, blank)
 
     variable col : Integer range 1 to 640;
     variable row : Integer range 1 to 480;
