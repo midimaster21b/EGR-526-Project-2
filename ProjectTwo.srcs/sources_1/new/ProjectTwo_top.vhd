@@ -43,22 +43,20 @@ architecture Behavioral of ProjectTwo_top is
           Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0));
   end component;
 
-  -- component bresenham_line is
-  --   generic (Start_Col, Start_Row, Finish_Col, Finish_Row : Integer);
+  component pixel_mux is
+    Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0);
+          blank : in STD_LOGIC;
+          RED_IN_1, RED_IN_2, GREEN_IN_1, GREEN_IN_2, BLUE_IN_1, BLUE_IN_2 : STD_LOGIC_VECTOR (3 downto 0);
+          Red_Out, Green_Out, Blue_Out : out STD_LOGIC_VECTOR (3 downto 0));
+  end component;
 
-  --   Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank, vsync : in STD_LOGIC;
-  --         Line_Red, Line_Green, Line_Blue : in STD_LOGIC_VECTOR (3 downto 0);
-  --         Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0)
-  --         -- Line_Col_In, Line_Row_In : in STD_LOGIC_VECTOR(10 downto 0);
-  --         -- Line_Col_Out, Line_Row_Out : out STD_LOGIC_VECTOR(10 downto 0)
-  --         );
-  -- end component;
 
   signal clk_25MHz,blank,VSYNC_temp : STD_LOGIC;
   signal hcount,vcount : STD_LOGIC_VECTOR(10 downto 0);
 
-  signal Line_Red, Line_Blue, Line_Green : STD_LOGIC_VECTOR (3 downto 0) := "1111";
-  signal Line_Col_Feedback, Line_Row_Feedback : STD_LOGIC_VECTOR(10 downto 0);
+  signal background_blue, background_green, background_red : STD_LOGIC_VECTOR (3 downto 0);
+  signal spaceship_blue, spaceship_green, spaceship_red : STD_LOGIC_VECTOR (3 downto 0) := "0000";
+
 
 begin
   c1 : clk_wiz_0 PORT MAP (clk_in1 => clk_100MHz, reset => reset, clk_out1 => clk_25MHz,
@@ -69,14 +67,15 @@ begin
                                        vcount => vcount);
 
   s1 : static_background PORT MAP (hcount => hcount, vcount => vcount, blank => blank,
-                                   RED => Red_Out, GREEN => Green_Out, BLUE => Blue_Out);
+                                   RED => background_red, GREEN => background_green, BLUE => background_blue);
 
-  -- bl : bresenham_line
-  --   generic map (Start_Col => 50, Start_Row => 50, Finish_Col => 51, Finish_Row => 100)
-  --   port map (hcount => hcount, vcount => vcount, blank => blank, vsync => VSYNC_temp,
-  --             Line_Red => Line_Red, Line_Green => Line_Green, Line_Blue => Line_Blue,
-  --             Red => Red_Out, Green => Green_Out, Blue => Blue_Out
-  --             );
+  p1 : pixel_mux port map (hcount => hcount, vcount => vcount, blank => blank,
+                           RED_IN_1 => background_red, RED_IN_2 => spaceship_red,
+                           GREEN_IN_1 => background_green, GREEN_IN_2 => spaceship_green,
+                           BLUE_IN_1 => background_blue, BLUE_IN_2 => spaceship_blue,
+                           Red_Out => Red_Out, Green_Out => Green_Out, Blue_Out => Blue_Out
+                           );
+
 
   VSYNC <= VSYNC_temp;
 
