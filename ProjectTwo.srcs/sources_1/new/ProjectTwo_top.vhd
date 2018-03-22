@@ -55,6 +55,11 @@ architecture Behavioral of ProjectTwo_top is
           Red_Out, Green_Out, Blue_Out : out STD_LOGIC_VECTOR (3 downto 0));
   end component;
 
+  component spaceship is
+    Port (clk25 : in STD_LOGIC; hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0);
+          blank : in STD_LOGIC;
+          Red, Green, Blue : out STD_LOGIC_VECTOR (3 downto 0));
+  end component;
 
   signal clk_25MHz,blank,VSYNC_temp : STD_LOGIC;
   signal hcount,vcount : STD_LOGIC_VECTOR(10 downto 0);
@@ -77,6 +82,10 @@ begin
 
   lase1: lasers port map (hcount => hcount, vcount => vcount, blank => blank, vsync => vsync_temp,
                           Red => laser_red, Green => laser_green, Blue => laser_blue);
+
+
+  space1: spaceship port map (clk25 => clk_25MHz, hcount => hcount, vcount => vcount, blank => blank,
+                              Red => spaceship_red, Green => spaceship_green, Blue => spaceship_blue);
 
 
   p1 : pixel_mux port map (hcount => hcount, vcount => vcount, blank => blank,
