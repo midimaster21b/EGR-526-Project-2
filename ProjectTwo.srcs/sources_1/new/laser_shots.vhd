@@ -20,9 +20,10 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use ieee.numeric_std.all;
 
 entity lasers is
-  Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank : in STD_LOGIC;
+  Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank, vsync : in STD_LOGIC;
         Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0));
 end lasers;
 
@@ -41,6 +42,11 @@ architecture Behavioral of lasers is
 
   signal Red1, Green1, Blue1 : STD_LOGIC_VECTOR (3 downto 0) := "0000";
   signal Red2, Green2, Blue2 : STD_LOGIC_VECTOR (3 downto 0) := "0000";
+
+  -- signal Upper_Blank : STD_LOGIC_VECTOR (10 downto 0) := std_logic_vector(to_unsigned(340, 11));
+  -- signal Lower_Blank : STD_LOGIC_VECTOR (10 downto 0) := std_logic_vector(to_unsigned(380, 11));
+  -- signal Upper_Blank : Integer := 340;
+  -- signal Lower_Blank : Integer := 380;
 
 begin
 
@@ -61,17 +67,32 @@ begin
 
   -- This should probably be a separate entity...
   -- Pixel mux...
-  process(hcount, vcount, blank)
+  process(hcount, vcount, blank, vsync)
 
     variable col : Integer range 1 to 640;
     variable row : Integer range 1 to 480;
+    variable Upper_Blank : Integer range 1 to 560 := 480;
+    variable Lower_Blank : Integer range 1 to 560 := 560;
+
 
   begin
     row := conv_integer(vcount);
     col := conv_integer(hcount);
 
+    if (rising_edge(vsync)) then
+      if (Lower_Blank < 240) then
+        Upper_Blank := 480;
+        Lower_Blank := 560;
+
+      else
+        Upper_Blank := Upper_Blank - 1;
+        Lower_Blank := Lower_Blank - 1;
+
+      end if;
+    end if;
+
     if (blank = '0') then
-      if (row < 340 or row > 380) then
+      if (row < Upper_Blank or row > Lower_Blank) then
         Red   <= Red1 or Red2;
         Green <= Green1 or Green2;
         Blue  <= Blue1 or Blue2;

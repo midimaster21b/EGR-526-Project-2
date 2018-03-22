@@ -44,7 +44,7 @@ architecture Behavioral of ProjectTwo_top is
   end component;
 
   component lasers is
-      Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank : in STD_LOGIC;
+      Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank, vsync : in STD_LOGIC;
               Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0));
   end component;
 
@@ -75,7 +75,7 @@ begin
                                    RED => background_red, GREEN => background_green, BLUE => background_blue);
 
 
-  lase1: lasers port map (hcount => hcount, vcount => vcount, blank => blank,
+  lase1: lasers port map (hcount => hcount, vcount => vcount, blank => blank, vsync => vsync_temp,
                           Red => laser_red, Green => laser_green, Blue => laser_blue);
 
 
@@ -85,6 +85,8 @@ begin
                            BLUE_IN_1 => background_blue, BLUE_IN_2 => laser_blue,
                            Red_Out => Red_Out, Green_Out => Green_Out, Blue_Out => Blue_Out
                            );
+
+
 
 
   VSYNC <= VSYNC_temp;
