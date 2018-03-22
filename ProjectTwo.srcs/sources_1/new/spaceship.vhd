@@ -27,6 +27,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity spaceship is
   Port (clk25 : in STD_LOGIC; hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0);
         blank : in STD_LOGIC;
+        ROW_CENTER, COL_CENTER : in STD_LOGIC_VECTOR (10 downto 0);
         Red, Green, Blue : out STD_LOGIC_VECTOR (3 downto 0));
 end spaceship;
 
@@ -37,8 +38,8 @@ architecture Behavioral of spaceship is
   constant COL_MAX : STD_LOGIC_VECTOR (10 downto 0) := "01010000000"; --640
 
   -- Center screen coordinates
-  constant ROW_CENTER : STD_LOGIC_VECTOR (10 downto 0) := "00011110000"; --240
-  constant COL_CENTER : STD_LOGIC_VECTOR (10 downto 0) := "00101000000"; --320
+  -- constant ROW_CENTER : STD_LOGIC_VECTOR (10 downto 0) := "00011110000"; --240
+  -- constant COL_CENTER : STD_LOGIC_VECTOR (10 downto 0) := "00101000000"; --320
 
   -- Image dimensions
   constant WIDTH : integer := 63;

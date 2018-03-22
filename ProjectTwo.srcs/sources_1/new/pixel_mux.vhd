@@ -26,7 +26,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity pixel_mux is
 Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0);
       blank : in STD_LOGIC;
-      RED_IN_1, RED_IN_2, GREEN_IN_1, GREEN_IN_2, BLUE_IN_1, BLUE_IN_2 : STD_LOGIC_VECTOR (3 downto 0);
+      RED_IN_1, RED_IN_2, RED_IN_3, GREEN_IN_1, GREEN_IN_2, GREEN_IN_3, BLUE_IN_1, BLUE_IN_2, BLUE_IN_3 : STD_LOGIC_VECTOR (3 downto 0);
       Red_Out, Green_Out, Blue_Out : out STD_LOGIC_VECTOR (3 downto 0));
 end pixel_mux;
 
@@ -36,9 +36,9 @@ begin
 
   process(hcount, vcount)
   begin
-    Red_Out   <= Red_In_1 or Red_In_2;
-    Blue_Out  <= Blue_In_1 or Blue_In_2;
-    Green_Out <= Green_In_1 or Green_In_2;
+    Red_Out   <= Red_In_1 or Red_In_2 or Red_In_3;
+    Blue_Out  <= Blue_In_1 or Blue_In_2 or Blue_In_3;
+    Green_Out <= Green_In_1 or Green_In_2 or Green_In_3;
   end process;
 
 end Behavioral;

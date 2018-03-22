@@ -23,7 +23,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use ieee.numeric_std.all;
 
 entity lasers is
-  Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank, vsync : in STD_LOGIC;
+  Port (hcount,vcount : in STD_LOGIC_VECTOR(10 downto 0); blank, vsync, laser_clk : in STD_LOGIC;
         Red,Green,Blue : out STD_LOGIC_VECTOR(3 downto 0));
 end lasers;
 
@@ -79,7 +79,7 @@ begin
     row := conv_integer(vcount);
     col := conv_integer(hcount);
 
-    if (rising_edge(vsync)) then
+    if (rising_edge(laser_clk)) then
       if (Lower_Blank < 240) then
         Upper_Blank := 480;
         Lower_Blank := 560;
