@@ -52,11 +52,6 @@ begin
     drow := Finish_Row - Start_Row;
     dcol := Finish_Col - Start_Col;
 
-    -- Calculate initial error
-    -- Max: 2 * 480
-    -- Min: -640
-    err := 2 * drow - dcol;
-
     row_iter := Start_Row;
     col_iter := Start_Col;
 
@@ -67,33 +62,89 @@ begin
     Green_Out := "0000";
     Blue_Out  := "0000";
 
-    for col_iter in Start_Col to Finish_Col loop
-      -- for row_iter in Start_Row to Finish_Row loop
+    if (dcol > drow) then
+      -- Calculate initial error
+      -- Max: 2 * 480
+      -- Min: -640
+      err := 2 * drow - dcol;
 
-      -- if (col_iter = line_col and row_iter = line_row) then
-      if (col = col_iter and row = row_iter) then
-        Red_Out   := "1111";
-        Green_Out := "1111";
-        Blue_Out  := "1111";
-      end if;
 
-      if err > 0 then
-        -- Increment row
-        -- y = y + 1;
-        -- line_col := line_col + 1;
-        row_iter := row_iter + 1;
+      for col_iter in Start_Col to Finish_Col loop
+        -- for row_iter in Start_Row to Finish_Row loop
 
-        -- D = D - 2*dx
-        -- Min: -1280
-        err := err - (2 * dcol);
-      end if;
+        -- Vertical line case
+        -- if ((Start_Col = Finish_Col and col = Start_Col) and (row >= Start_Row and row <= Finish_Row)) then
+        --   Red_Out   := Line_Red;
+        --   Green_Out := Line_Green;
+        --   Blue_Out  := Line_Blue;
+        -- end if;
 
-      -- D = D + 2*dy
-      -- Max: 960
-      err := err + (2 * drow);
+        if (col = col_iter and row = row_iter) then
+          Red_Out   := Line_Red;
+          Green_Out := Line_Green;
+          Blue_Out  := Line_Blue;
+        end if;
 
-    -- end loop;
-    end loop;
+        if err > 0 then
+          -- Increment row
+          -- y = y + 1;
+          -- line_col := line_col + 1;
+          if Finish_Row > Start_Row then
+            row_iter := row_iter + 1;
+          elsif Finish_Row < Start_Row then
+            row_iter := row_iter - 1;
+          end if;
+
+          -- D = D - 2*dx
+          -- Min: -1280
+          err := err - (2 * dcol);
+        end if;
+
+        -- D = D + 2*dy
+        -- Max: 960
+        err := err + (2 * drow);
+
+      -- end loop;
+      end loop;
+    else
+      -- Calculate initial error
+      -- Max: 2 * 480
+      -- Min: -640
+      err := 2 * dcol - drow;
+
+      for row_iter in Start_Row to Finish_Row loop
+
+        if (col = col_iter and row = row_iter) then
+          Red_Out   := Line_Red;
+          Green_Out := Line_Green;
+          Blue_Out  := Line_Blue;
+        end if;
+
+        if err > 0 then
+          -- Increment row
+          -- y = y + 1;
+          -- line_col := line_col + 1;
+          if Finish_Col > Start_Col then
+            col_iter := col_iter + 1;
+          elsif Finish_Row < Start_Row then
+            col_iter := col_iter - 1;
+          end if;
+
+          -- DIDN'T CHANGE BELOW THIS!!!!
+
+          -- D = D - 2*dx
+          -- Min: -1280
+          err := err - (2 * drow);
+        end if;
+
+        -- D = D + 2*dy
+        -- Max: 960
+        err := err + (2 * dcol);
+
+      -- end loop;
+      end loop;
+    end if;
+
 
     Red   <= Red_Out;
     Green <= Green_Out;
