@@ -102,7 +102,9 @@ begin
               );
 
   bottom_left_diag : bresenham_line
+    -- generic map (Start_Col => 1, Start_Row => 439, Finish_Col => 141, Finish_Row => 371)
     generic map (Start_Col => 1, Start_Row => 439, Finish_Col => 141, Finish_Row => 371)
+    -- generic map (Start_Col => 141, Start_Row => 371, Finish_Col => 1, Finish_Row => 439)
     port map (hcount => hcount, vcount => vcount,
               Line_Red => Line_Red, Line_Green => Line_Green, Line_Blue => Line_Blue,
               Red => Red7, Green => Green7, Blue => Blue7
@@ -118,9 +120,9 @@ begin
 
   -- This should probably be a separate entity...
   -- Pixel mux...
-  process(Red1, Red2, Red3, Red4, Red5, Red6,
-          Green1, Green2, Green3, Green4, Green5, Green6,
-          Blue1, Blue2, Blue3, Blue4, Blue5, Blue6)
+  process(Red1, Red2, Red3, Red4, Red5, Red6, Red7, Red8,
+          Green1, Green2, Green3, Green4, Green5, Green6, Green7, Green8,
+          Blue1, Blue2, Blue3, Blue4, Blue5, Blue6, Blue7, Blue8)
   begin
     Red   <= Red1 or Red2 or Red3 or Red4 or Red5 or Red6 or Red7 or Red8;
     Green <= Green1 or Green2 or Green3 or Green4 or Green5 or Green6 or Green7 or Green8;

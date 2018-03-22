@@ -36,25 +36,49 @@ architecture Behavioral of bresenham_line is
 
 begin
   -- process(hcount, vcount, blank, vsync)
-  -- process(hcount, vcount, blank, vsync, line_row_in, line_col_in)
   process(hcount)
     VARIABLE err : INTEGER range -1300 to 1000;
-    variable dcol, col, line_col, col_iter : INTEGER range 1 to 640;
-    variable drow, row, line_row, row_iter : INTEGER range 1 to 480;
+    variable dcol, col, col_iter, col_iter_start, col_iter_finish : INTEGER range 1 to 640;
+    variable drow, row, row_iter, row_iter_start, row_iter_finish : INTEGER range 1 to 480;
     variable Red_Out, Green_Out, Blue_Out : STD_LOGIC_VECTOR := "0000";
 
   begin
     row := conv_integer(vcount);
     col := conv_integer(hcount);
 
-    drow := Finish_Row - Start_Row;
-    dcol := Finish_Col - Start_Col;
-
     row_iter := Start_Row;
     col_iter := Start_Col;
 
-    -- Used for determining next
-    line_col := Start_Col;
+    row_iter_start := Start_Row;
+    row_iter_finish := Finish_Row;
+    row_iter := Start_Row;
+    col_iter_start := Start_Col;
+    col_iter_finish := Finish_Col;
+    col_iter := Start_Col;
+
+    if (Finish_Row > Start_Row) then
+      drow := Finish_Row - Start_Row;
+    --   row_iter_start := Start_Row;
+    --   row_iter_finish := Finish_Row;
+    --   row_iter := Start_Row;
+    else
+      drow := Start_Row - Finish_Row;
+    --   row_iter_start := Finish_Row;
+    --   row_iter_finish := Start_Row;
+    --   row_iter := Finish_Row;
+    end if;
+
+    if (Finish_Col > Start_Col) then
+      dcol := Finish_Col - Start_Col;
+    --   col_iter_start := Start_Col;
+    --   col_iter_finish := Finish_Col;
+    --   col_iter := Start_Col;
+    else
+      dcol := Start_Col - Finish_Col;
+    --   col_iter_start := Finish_Col;
+    --   col_iter_finish := Start_Col;
+    --   col_iter := Finish_Col;
+    end if;
 
     Red_Out   := "0000";
     Green_Out := "0000";
@@ -68,7 +92,7 @@ begin
       -- Min: -640
       err := 2 * drow - dcol;
 
-      for col_iter in Start_Col to Finish_Col loop
+      for col_iter in col_iter_start to col_iter_finish loop
 
         if (col = col_iter and row = row_iter) then
           Red_Out   := Line_Red;
@@ -79,7 +103,6 @@ begin
         if err > 0 then
           -- Increment row
           -- y = y + 1;
-          -- line_col := line_col + 1;
           if Finish_Row > Start_Row then
             row_iter := row_iter + 1;
           elsif Finish_Row < Start_Row then
@@ -103,7 +126,7 @@ begin
       -- Min: -640
       err := 2 * dcol - drow;
 
-      for row_iter in Start_Row to Finish_Row loop
+      for row_iter in row_iter_start to row_iter_finish loop
 
         if (col = col_iter and row = row_iter) then
           Red_Out   := Line_Red;
@@ -114,7 +137,6 @@ begin
         if err > 0 then
           -- Increment row
           -- y = y + 1;
-          -- line_col := line_col + 1;
           if Finish_Col > Start_Col then
             col_iter := col_iter + 1;
           elsif Finish_Row < Start_Row then
